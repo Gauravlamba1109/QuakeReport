@@ -1,17 +1,17 @@
 package com.example.android.quakereport;
 
 public class Quake {
-    private String mMagnitude ;
-    private String[] mLocation ;
+    private double mMagnitude;
+    private String[] mLocation;
     private String mTime;
 
-    public Quake(String vMagnitude, String[] vLocation , String vTime){
-        mTime=vTime;
+    public Quake(double vMagnitude, String[] vLocation, String vTime) {
+        mTime = vTime;
         mLocation = vLocation;
-        mMagnitude=vMagnitude;
+        mMagnitude = vMagnitude;
     }
 
-    public String getMagnitude(){
+    public double getMagnitude() {
         return mMagnitude;
     }
 
@@ -23,10 +23,10 @@ public class Quake {
         }
         if (len == 1) {
             return mLocation[0];
-        }
-        else return mLocation[n];
+        } else return mLocation[n];
     }
-    public String getTime(){
+
+    public String getTime() {
         return mTime;
     }
 }
