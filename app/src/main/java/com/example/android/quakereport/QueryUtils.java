@@ -69,6 +69,7 @@ public final class QueryUtils {
                 String unix = p.getString("time");
 
 
+                String url1 = p.getString("url");
 
                 String[] places = place.split(" of ", 2);
 
@@ -76,7 +77,7 @@ public final class QueryUtils {
 
 
                 String time = new SimpleDateFormat("MMM dd, yyyy \r\nh:ma",Locale.ENGLISH).format(df);
-                earthquakes.add(new Quake(mag,places,time));
+                earthquakes.add(new Quake(mag,places,time,url1));
             }
             // TODO: Parse the response given by the SAMPLE_JSON_RESPONSE string and
             // build up a list of Earthquake objects with the corresponding data.

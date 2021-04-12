@@ -15,9 +15,18 @@
  */
 package com.example.android.quakereport;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -35,13 +44,24 @@ public class EarthquakeActivity extends AppCompatActivity {
 
         // Find a reference to the {@link ListView} in the layout
         ListView earthquakeListView = (ListView) findViewById(R.id.list);
-
         // Create a new {@link ArrayAdapter} of earthquakes
         QuakeAdapter adapter = new QuakeAdapter(this, earthquakes);
 
         // Set the adapter on the {@link ListView}
         // so the list can be populated in the user interface
-        assert earthquakeListView != null;
         earthquakeListView.setAdapter(adapter);
+
+        earthquakeListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+             Quake currentItem = earthquakes.get(position);
+             String url = currentItem.getURL();
+             Log.v(String.valueOf(getBaseContext()),url);
+             Intent intent = new Intent(Intent.ACTION_VIEW);
+             intent.setData(Uri.parse(url));
+             startActivity(intent);
+              //  Toast.makeText(getApplicationContext(),""+url,Toast.LENGTH_LONG).show();
+            }
+        });
     }
 }
