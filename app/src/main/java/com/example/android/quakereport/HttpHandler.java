@@ -2,62 +2,74 @@ package com.example.android.quakereport;
 
 import android.util.Log;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
+import java.nio.charset.Charset;
 
 public class HttpHandler {
-
     private static final String TAG = HttpHandler.class.getSimpleName();
 
     public HttpHandler() {
     }
 
-    public String makeServiceCall(String reqUrl) {
-        String response = null;
-        try {
-            URL url = new URL(reqUrl);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
-            //read the response
-            InputStream in = new BufferedInputStream(conn.getInputStream());
-            response = convertedStreamToString(in);
-        } catch (MalformedURLException e) {
-            Log.e(TAG, "MalformedURLException: " + e.getMessage());
-        } catch (ProtocolException e) {
-            Log.e(TAG, "ProtocolException: " + e.getMessage());
-        } catch (IOException e) {
-            Log.e(TAG, "IOException: " + e.getMessage());
-        } catch (Exception e) {
-            Log.e(TAG, "Exception: " + e.getMessage());
+    public static String makeHttpRequest(String s) throws IOException{
+        URL url = null;
+        try {                                //making sure the url is fine
+            url = new URL(s);
+        } catch (MalformedURLException e){
+            e.printStackTrace();
+            Log.e(TAG,"error in the url",e);
         }
-        return response;
-    }
 
-    private String convertedStreamToString(InputStream is) {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-        StringBuilder sb = new StringBuilder();
+        String jsonResponse = "";
+        if (url==null) {
+            return jsonResponse;
+        }
 
-        String line;
+        HttpURLConnection urlConnection = null;
+        InputStream inputStream= null;
         try {
-            while ((line = reader.readLine()) != null) {
-                sb.append(line).append('\n');
-                }
-        } catch(IOException e){
+            urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.setRequestMethod("GET");
+            urlConnection.setReadTimeout(1000);
+            urlConnection.setConnectTimeout(15000);
+            urlConnection.connect();
+            inputStream = urlConnection.getInputStream();
+            jsonResponse = readFromStream(inputStream);
+        } catch (IOException e){
                 e.printStackTrace();
-            } finally{
-                try {
-                    is.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+            Log.e(TAG, "error in the httpurlconnection ",e);
+        } finally {
+            if (urlConnection!=null){
+                urlConnection.disconnect();
             }
-        return sb.toString();
+            if(inputStream!=null){
+                inputStream.close();
+            }
+        }
+        Log.v(TAG,jsonResponse);
+        return jsonResponse;
     }
+
+    private static String readFromStream(InputStream inputStream) throws IOException {
+        StringBuilder output= new StringBuilder();
+        if (inputStream!=null){
+            InputStreamReader inputStreamReader =
+                    new InputStreamReader(inputStream, Charset.forName("UTF-8"));
+            BufferedReader reader = new BufferedReader(inputStreamReader);
+            String line = reader.readLine();
+            while (line!=null){
+                output.append(line);
+                line = reader.readLine();
+            }
+        }
+        return output.toString();
+    }
+
 }
+
