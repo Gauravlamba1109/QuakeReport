@@ -17,7 +17,10 @@ package com.example.android.quakereport;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.util.Log;
@@ -28,17 +31,20 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 
 public class EarthquakeActivity extends AppCompatActivity {
 
-    public static final String LOG_TAG = EarthquakeActivity.class.getName();
+    /** URL to query the USGS dataset for earthquake information */
+   public static final String LOG_TAG = EarthquakeActivity.class.getName();
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.earthquake_activity);
-
         // Create a fake list of earthquake locations.
         ArrayList<Quake> earthquakes = QueryUtils.extractEarthquakes();
 
@@ -63,5 +69,10 @@ public class EarthquakeActivity extends AppCompatActivity {
               //  Toast.makeText(getApplicationContext(),""+url,Toast.LENGTH_LONG).show();
             }
         });
+
+
     }
-}
+
+
+
+    }
